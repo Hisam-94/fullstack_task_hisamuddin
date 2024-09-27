@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "target": "es6",                       // Specify ECMAScript target version
+    "module": "commonjs",                     // Use commonJS module system (Node.js default)
+    "moduleResolution": "node",               // Module resolution for node_modules
+    "outDir": "./dist",                       // Directory for compiled output
+    "rootDir": "./src",                       // Root directory for input files
+    "strict": true,                           // Enable all strict type checking options
+    "esModuleInterop": true,                  // Enable compatibility with CommonJS modules (like express)
+    "forceConsistentCasingInFileNames": true, // Disallow inconsistently-cased references to the same file
+    "skipLibCheck": true,                     // Skip type checking of declaration files
+    "noImplicitAny": true,                    // Raise error on expressions and declarations with an implied `any` type
+    "resolveJsonModule": true,                // Allows importing of JSON files
+    "typeRoots": ["./node_modules/@types"],   // Look for type definitions in this folder
+    "sourceMap": true,                        // Generate source maps for easier debugging
+    "noEmitOnError": true,                    // Avoid emitting output files if there's a compilation error
+    "baseUrl": ".",                           // Allows importing modules using an absolute path based on the root
+    "paths": {                                // Alias for module paths (optional, can adjust to your structure)
+      "@config/*": ["src/config/*"],
+      "@controllers/*": ["src/controllers/*"],
+      "@routes/*": ["src/routes/*"],
+      "@models/*": ["src/models/*"],
+      "@middleware/*": ["src/middleware/*"],
+      "@utils/*": ["src/utils/*"]
+    }
+  },
+  "include": ["src/**/*"],                    // Include all files in src folder
+  "exclude": ["node_modules", "dist"]         // Exclude node_modules and dist folder
+}

@@ -3,6 +3,11 @@
 ## Overview  
 This project implements a full-stack To-Do List app using Node.js with WebSockets and HTTP API for backend functionality, along with React.js for the front end. It includes Redis for caching and MongoDB for persistent storage.
 
+## Deployment
+
+- Frontend: https://fullstack-task-hisamuddin-1.onrender.com
+- Backend: https://fullstack-task-hisamuddin-server.onrender.com
+
 ## Features
 - Add Tasks: Users can submit new tasks via WebSocket messages using the add event.
 - Redis Cache: Tasks are temporarily stored in Redis under the key FULLSTACK_TASK_HISAMUDDIN.

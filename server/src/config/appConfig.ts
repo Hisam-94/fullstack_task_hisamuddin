@@ -10,12 +10,14 @@ const config = {
       "http://localhost:3000",
       "http://localhost:3001",
       "http://localhost:5000",
-      "https://fullstack-task-hisamuddin-1.onrender.com",
+      "https://fullstack-task-hisamuddin.vercel.app",
+      "https://fullstack-task-hisamuddin-client.vercel.app",
     ],
   },
   mongodb: {
-    uri: process.env.MONGO_URI || "",
-    dbName: process.env.MONGO_DB_NAME || "kazam",
+    uri:
+      process.env.MONGO_URI ||"",
+    dbName: process.env.MONGO_DB_NAME || "Kazam",
   },
   redis: {
     host: process.env.REDIS_HOST || "",

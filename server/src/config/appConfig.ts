@@ -15,7 +15,7 @@ const config = {
   },
   mongodb: {
     uri: process.env.MONGO_URI || "",
-    dbName: process.env.MONGO_DB_NAME || "Kazam",
+    dbName: process.env.MONGO_DB_NAME || "kazam",
   },
   redis: {
     host: process.env.REDIS_HOST || "",

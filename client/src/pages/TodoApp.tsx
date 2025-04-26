@@ -23,7 +23,12 @@ const TodoApp: React.FC = () => {
       try {
         setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-        const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
+        // In production, use relative URL to ensure it works on Vercel
+        const isProduction = process.env.NODE_ENV === "production";
+        const apiUrl = isProduction
+          ? window.location.origin
+          : process.env.REACT_APP_API_URL || "http://localhost:8000";
+
         const response = await fetch(`${apiUrl}/api/tasks/fetchAllTasks`);
 
         if (!response.ok) {

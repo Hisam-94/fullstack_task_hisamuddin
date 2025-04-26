@@ -41,6 +41,11 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Server is up and running!");
 });
 
-// Start server
-const PORT = config.server.port;
-httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+// Start server in standalone mode
+if (require.main === module) {
+  const PORT = config.server.port;
+  httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+
+// Export for serverless use
+export default app;

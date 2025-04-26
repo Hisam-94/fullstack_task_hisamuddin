@@ -1,25 +1,71 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import socket from "../socket";
+import { TaskContext } from "../pages/TodoApp";
 
 const TaskInput: React.FC = () => {
   const [newTask, setNewTask] = useState<string>("");
   const [isPending, setIsPending] = useState<boolean>(false);
+  const { refreshTasks } = useContext(TaskContext);
 
-  const addTask = () => {
+  const addTask = async () => {
     if (newTask.trim()) {
       setIsPending(true);
 
-      // Use socket to add task
-      socket.emit("add", newTask);
+      try {
+        // Try socket first
+        const socketPromise = new Promise((resolve, reject) => {
+          const timeout = setTimeout(() => {
+            reject(new Error("Socket timeout"));
+          }, 5000);
 
-      // Reset input field right away for better UX
-      setNewTask("");
+          socket.emit("add", newTask);
 
-      // We'll assume the task was added after a short delay
-      // The real confirmation comes via the socket event in the parent component
-      setTimeout(() => {
+          socket.once("taskAdded", () => {
+            clearTimeout(timeout);
+            resolve("Success via socket");
+          });
+
+          socket.once("error", (err) => {
+            clearTimeout(timeout);
+            reject(new Error(err));
+          });
+        });
+
+        try {
+          // Try socket first
+          await socketPromise;
+          console.log("Task added via socket");
+        } catch (socketError) {
+          console.log("Socket failed, trying REST API", socketError);
+
+          // Fallback to REST API
+          const apiUrl =
+            process.env.REACT_APP_API_URL || "http://localhost:8000";
+          const response = await fetch(`${apiUrl}/api/tasks/add`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ task: newTask }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`API Error: ${response.status}`);
+          }
+
+          console.log("Task added via REST API");
+          // Refresh tasks after adding via REST API
+          refreshTasks();
+        }
+
+        // Success - clear the input
+        setNewTask("");
+      } catch (error) {
+        console.error("Failed to add task:", error);
+        alert("Failed to add task. Please try again.");
+      } finally {
         setIsPending(false);
-      }, 500);
+      }
     }
   };
 

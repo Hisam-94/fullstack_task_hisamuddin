@@ -33,10 +33,12 @@ export const configureSocketIO = (httpServer: HttpServer) => {
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
       },
-      transports: ["websocket", "polling"],
+      transports: ["websocket", "polling"], // Prioritize WebSockets
       allowEIO3: true, // Allow Engine.IO 3 requests (for compatibility)
       path: "/socket.io/",
       connectTimeout: 45000, // 45s timeout
+      pingTimeout: 30000, // How long to wait for pong (30s)
+      pingInterval: 25000, // How often to ping (25s)
     });
 
     io.on("connection", (socket) => {

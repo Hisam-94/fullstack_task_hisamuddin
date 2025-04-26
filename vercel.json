@@ -1,16 +1,26 @@
 {
   "version": 2,
-  "buildCommand": "cd client && npm install && npm run build && cd ../server && npm install && npm run build",
-  "outputDirectory": "client/build",
-  "rewrites": [
+  "builds": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api"
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    },
+    {
+      "src": "server/src/server.ts",
+      "use": "@vercel/node"
     }
   ],
-  "functions": {
-    "api": {
-      "runtime": "nodejs18.x"
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "server/src/server.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "client/build/$1"
     }
-  }
+  ]
 }

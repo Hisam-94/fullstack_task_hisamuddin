@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import TaskInput from "../components/TaskInput";
 import TaskList from "../components/TaskList";
-import { socket } from "../socket";
+import socket from "../socket";
 
 interface TaskState {
   unsavedTasks: string[];
@@ -18,41 +18,36 @@ const TodoApp: React.FC = () => {
     error: null,
   });
 
-  useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        setState((prev) => ({ ...prev, isLoading: true, error: null }));
+  const fetchTasks = useCallback(async () => {
+    try {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
 
-        // In production, use relative URL to ensure it works on Vercel
-        const isProduction = process.env.NODE_ENV === "production";
-        const apiUrl = isProduction
-          ? window.location.origin
-          : process.env.REACT_APP_API_URL || "http://localhost:8000";
+      const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiUrl}/api/tasks/fetchAllTasks`);
 
-        const response = await fetch(`${apiUrl}/api/tasks/fetchAllTasks`);
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
-        const { unsavedTasks, mongoDBTasks } = await response.json();
-
-        setState((prev) => ({
-          ...prev,
-          unsavedTasks: unsavedTasks || [],
-          mongoDBTasks: mongoDBTasks || [],
-          isLoading: false,
-        }));
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-        setState((prev) => ({
-          ...prev,
-          error: "Failed to load tasks. Please try again later.",
-          isLoading: false,
-        }));
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
       }
-    };
 
+      const { unsavedTasks, mongoDBTasks } = await response.json();
+
+      setState((prev) => ({
+        ...prev,
+        unsavedTasks: unsavedTasks || [],
+        mongoDBTasks: mongoDBTasks || [],
+        isLoading: false,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+      setState((prev) => ({
+        ...prev,
+        error: "Failed to load tasks. Please try again later.",
+        isLoading: false,
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
     fetchTasks();
 
     // Set up socket event listeners
@@ -85,7 +80,7 @@ const TodoApp: React.FC = () => {
       socket.off("taskAdded");
       socket.off("error");
     };
-  }, []);
+  }, [fetchTasks]);
 
   const { unsavedTasks, mongoDBTasks, isLoading, error } = state;
   const allTasks = [...unsavedTasks, ...mongoDBTasks];

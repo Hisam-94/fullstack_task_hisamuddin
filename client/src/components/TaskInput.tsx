@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { socket } from "../socket";
+import socket from "../socket";
 
 const TaskInput: React.FC = () => {
   const [newTask, setNewTask] = useState<string>("");
@@ -9,6 +9,7 @@ const TaskInput: React.FC = () => {
     if (newTask.trim()) {
       setIsPending(true);
 
+      // Use socket to add task
       socket.emit("add", newTask);
 
       // Reset input field right away for better UX

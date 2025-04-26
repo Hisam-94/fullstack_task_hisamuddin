@@ -1,14 +1,10 @@
 import { io, Socket } from "socket.io-client";
 
-// In production, use relative URL to ensure it works on Vercel
-// In development, use the explicit URL from environment
-const isProduction = process.env.NODE_ENV === "production";
-const API_URL = isProduction
-  ? window.location.origin
-  : process.env.REACT_APP_API_URL || "http://localhost:8000";
+// Use the API URL from environment variables
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:8000";
 
 // Create socket instance
-export const socket: Socket = io(API_URL, {
+const socket: Socket = io(API_URL, {
   withCredentials: true,
   transports: ["websocket", "polling"],
   reconnectionAttempts: 5,

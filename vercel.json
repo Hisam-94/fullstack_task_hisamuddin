@@ -1,5 +1,6 @@
 {
-  "rewrites": [{ "source": "/api/(.*)", "destination": "/api" }],
+  "framework": "create-react-app",
   "buildCommand": "cd client && npm install && npm run build",
+  "installCommand": "cd client && npm install",
   "outputDirectory": "client/build"
 }

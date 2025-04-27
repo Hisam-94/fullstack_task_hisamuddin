@@ -1,164 +1,242 @@
-# Full Stack Task - To-Do Application  
+# Full Stack Task - To-Do Application
 
-## Overview  
+## Overview
+
 This project implements a full-stack To-Do List app using Node.js with WebSockets and HTTP API for backend functionality, along with React.js for the front end. It includes Redis for caching and MongoDB for persistent storage.
 
-## Deployment
+## Live Deployment
 
-- Frontend: https://fullstack-task-hisamuddin-1.onrender.com
-- Backend: https://fullstack-task-hisamuddin-server.onrender.com
+- **Frontend**: [https://fullstack-task-hisamuddin-u53c.vercel.app](https://fullstack-task-hisamuddin-u53c.vercel.app)
+- **Backend**: [https://fullstack-task-hisamuddin-1.onrender.com](https://fullstack-task-hisamuddin-1.onrender.com)
 
 ## Features
-- Add Tasks: Users can submit new tasks via WebSocket messages using the add event.
-- Redis Cache: Tasks are temporarily stored in Redis under the key FULLSTACK_TASK_HISAMUDDIN.
-- MongoDB Integration: When the task count in Redis exceeds 50, the tasks are transferred to MongoDB for long-term storage and removed from Redis.
-- API Access: Retrieve all tasks by making a request to the /fetchAllTasks endpoint via HTTP.
-- Responsive Design: The front-end is developed in React.js, based on a Figma design, with responsive styling provided by Tailwind CSS. The interface is optimized for mobile and tablet devices.
 
-## Technologies Used  
-- **Backend:**  
-  - Node.js
-  - Express.js
-  - TypeScript
-  - MongoDB with Mongoose
-  - Redis (for caching)
-  - Socket.IO (for WebSocket communication)
-  
-- **Frontend:**  
-  - React.js 
-  - Tailwind CSS
-    
-## You need to run npm start in both the server and client
+- **Real-time Task Management**: Add tasks using WebSocket communication for instant updates
+- **Efficient Data Storage**:
+  - Redis Cache: Tasks stored in Redis under key `FULLSTACK_TASK_HISAMUDDIN`
+  - MongoDB Integration: Tasks moved to MongoDB when Redis count exceeds 50
+- **RESTful API**: Retrieve all tasks via the `/fetchAllTasks` endpoint
+- **Responsive Design**: Mobile and tablet-friendly UI built with React and Tailwind CSS
+- **Fallback Mechanisms**: Graceful handling of connection issues with REST API fallback
+- **Notification System**: Visual feedback for successful task addition and errors
 
-## ---------------------------------- Backend -------------------------------------
-## Prerequisites  
-Before you begin, ensure you have met the following requirements:
+## Tech Stack
 
-- You have installed the latest version of Node.js and npm
-- You have a Windows/Linux/Mac machine.
-- You have installed MongoDB
-- You have installed Redis
-- You are familiar with TypeScript basics
-- You have basic knowledge of Express.js, MongoDB, and Redis
+### Backend
 
-Optional but recommended:
+- **Node.js & Express**: Server framework for handling HTTP requests and WebSocket connections
+- **TypeScript**: Type-safe JavaScript for better development experience and fewer runtime errors
+- **MongoDB**: Persistent storage with Mongoose ODM for task storage beyond Redis limits
+- **Redis**: In-memory caching for fast access to recent tasks
+- **Socket.IO**: Real-time WebSocket communication for instant task updates
+- **Nodemon**: Development tool for auto-reloading during development
 
-- You have installed a modern code editor like Visual Studio Code
-- You are familiar with Socket.IO for real-time applications
-  
+### Frontend
+
+- **React.js**: UI library with functional components and hooks for state management
+- **TypeScript**: Type safety for components and better developer experience
+- **Tailwind CSS**: Utility-first styling framework for responsive design
+- **Socket.IO Client**: Real-time communication with the backend
+- **React Context API**: For state management across components
+
 ## Project Structure
-```
-root/
-│   .env
-│   .gitignore
-│   package.json
-│   tsconfig.json
-│
-└───src/
-    │   server.ts
-    ├───config/
-    ├───controllers/
-    ├───models/
-    └───routes/
-```
-### Environment Variables
 
-Make sure to set up the following environment variables in your `.env` file:
-
-- `REDIS_PASSWORD`: Password for Redis connection
-- `REDIS_USERNAME`: Username for Redis connection
-- `REDIS_PORT`: Port number for Redis server
-- `REDIS_HOST`: Hostname or IP address of Redis server
-- `MONGO_DB_NAME`: Name of your MongoDB database
-- `MONGO_URI`: Connection URI for MongoDB
-
-Example `.env` file:
+### Root Structure
 
 ```
-REDIS_PASSWORD=your_redis_password
-REDIS_USERNAME=your_redis_username
-REDIS_PORT=6379
-REDIS_HOST=localhost
-MONGO_DB_NAME=your_database_name
-MONGO_URI=mongodb://localhost:27017/your_database_name
+fullstack_task_hisamuddin/
+├── client/              # Frontend React application
+├── server/              # Backend Node.js application
+├── .gitignore           # Git ignore file
+└── README.md            # Project documentation
 ```
 
-## Setup
+### Frontend Structure
 
-1. Clone the repository
-2. Navigate to the server directory:
+```
+client/
+├── public/              # Static assets
+│   ├── index.html       # HTML template
+│   ├── notes-app-icon.svg  # App icon
+│   └── plus-circle-icon.svg  # Add button icon
+├── src/                 # Source code
+│   ├── components/      # React components
+│   │   ├── TaskInput.tsx    # Component for adding tasks
+│   │   ├── TaskList.tsx     # Component for displaying tasks
+│   │   └── TaskList.css     # Styles for TaskList
+│   ├── pages/           # Page components
+│   │   └── TodoApp.tsx      # Main application page
+│   ├── App.tsx          # Root component
+│   ├── index.tsx        # Entry point
+│   └── socket.ts        # Socket.IO client configuration
+├── .env                 # Environment variables
+├── package.json         # Dependencies and scripts
+├── tsconfig.json        # TypeScript configuration
+└── tailwind.config.js   # Tailwind CSS configuration
+```
+
+### Backend Structure
+
+```
+server/
+├── src/                 # Source code
+│   ├── config/          # Configuration files
+│   │   ├── appConfig.ts     # Application configuration
+│   │   ├── dbConnection.ts  # MongoDB connection setup
+│   │   ├── redis.ts         # Redis client configuration
+│   │   └── socketio.ts      # Socket.IO server setup
+│   ├── controllers/     # Request handlers
+│   │   └── taskController.ts  # Task-related controllers
+│   ├── models/          # Database models
+│   │   └── taskModel.ts      # Task MongoDB schema
+│   ├── routes/          # API routes
+│   │   └── taskRoutes.ts     # Task-related routes
+│   └── server.ts        # Entry point
+├── dist/                # Compiled JavaScript files
+├── .env                 # Environment variables
+├── package.json         # Dependencies and scripts
+└── tsconfig.json        # TypeScript configuration
+```
+
+## Project Architecture
+
+The application follows a modern architecture with:
+
+- **WebSocket-first approach** for real-time updates with fallback to REST API
+- **Caching layer** with Redis for frequent access and low latency
+- **Long-term storage** with MongoDB for data persistence
+- **Responsive React frontend** with Tailwind CSS for all device sizes
+- **Context API** for state management and component communication
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14+) and npm
+- MongoDB instance (local or remote)
+- Redis instance (local or remote)
+- Git
+
+### Backend Setup
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/Hisam-94/fullstack_task_hisamuddin.git
+   cd fullstack_task_hisamuddin
    ```
+
+2. Configure server environment:
+
+   ```bash
    cd server
-   ```
-3. Install dependencies:
-   ```
    npm install
    ```
-4. Set up your `.env` file with necessary environment variables (see [Environment Variables](#environment-variables) section)
-5. Start the backend server:
+
+3. Create `.env` file with:
+
    ```
-   npm start
+   PORT=8000
+   MONGO_URI=your_mongodb_connection_string
+   MONGO_DB_NAME=Kazam
+   REDIS_HOST=your_redis_host
+   REDIS_PORT=your_redis_port
+   REDIS_USERNAME=your_redis_username
+   REDIS_PASSWORD=your_redis_password
    ```
 
-## ---------------------------------- Frontend ------------------------------------
-## Prerequisites  
-Before you begin, ensure you have met the following requirements:
-
-- You have installed the latest version of Node.js and npm
-- You have a Windows/Linux/Mac machine.
-= You have read Create React App documentation.
-
-Optional but recommended:
-
-- You have installed a modern code editor like Visual Studio Code.
-- You are familiar with TypeScript basics (as your components are in .tsx files).
-
-## Project Structure
-```
-frontend-root/
-│   .gitignore
-│   package.json
-│   README.md
-│   tsconfig.json (if using TypeScript)
-│
-└───src/
-    │   index.js/ts
-    │   App.js/ts
-    │   App.css
-    │
-    ├───components/
-    │       TaskInput.tsx
-    │       TaskList.tsx
-    │       TaskList.css
-    │
-    └───Pages/
-            TodoApp.tsx
-```
-### Environment Variables
-
-Make sure to set up the following environment variables in your `.env` file:
-
-- `REACT_APP_API_URL`: Server Url
-  
-Example `.env` file:
-
-```
-REACT_APP_API_URL=http://localhost:8000
-```
-
-## Setup
-
-1. Clone the repository
-2. Navigate to the client directory:
+4. Start the server:
+   ```bash
+   npm run dev   # Development with hot-reload
+   # or
+   npm start     # Production build
    ```
+
+### Frontend Setup
+
+1. Navigate to client directory:
+
+   ```bash
    cd client
-   ```
-4. Install dependencies:
-   ```
    npm install
    ```
-5. Set up your `.env` file with the necessary environment variables (see [Environment Variables](#environment-variables) section)
-6. Start the development server:
+
+2. Create `.env` file with:
+
    ```
+   REACT_APP_API_URL=http://localhost:8000  # For local development
+   ```
+
+3. Start the client:
+   ```bash
    npm start
    ```
+
+## WebSocket Implementation Details
+
+The application uses a WebSocket-first approach for real-time communication:
+
+1. **Client-Side**:
+
+   - Socket connection established on app load
+   - Tasks added by emitting the `add` event with task content
+   - Listens for `taskAdded` event to update UI immediately
+   - Handles connection errors with fallback to REST API
+
+2. **Server-Side**:
+   - Socket.IO server initialized with CORS configuration
+   - Handles `add` event by storing task in Redis
+   - Monitors Redis task count for MongoDB migration
+   - Broadcasts `taskAdded` event to all connected clients
+   - Provides detailed error feedback
+
+## API Endpoints
+
+- `GET /api/tasks/fetchAllTasks`: Retrieves all tasks from Redis and MongoDB
+- `POST /api/tasks/add`: Fallback REST endpoint for adding tasks when WebSocket connection fails
+
+## Data Flow
+
+1. **Task Addition**:
+
+   - User adds task via UI
+   - Task sent to server via WebSocket
+   - Server stores in Redis
+   - Server broadcasts update to all clients
+   - If Redis exceeds limit, tasks moved to MongoDB
+
+2. **Task Retrieval**:
+   - Client requests tasks on initial load
+   - Server fetches from both Redis and MongoDB
+   - Combined results sent to client
+
+## Deployment Notes
+
+- **WebSocket Support**: For full WebSocket functionality, deploy the backend to a service that supports persistent connections (not serverless).
+- **Environment Variables**: Ensure all required environment variables are set in your deployment platform.
+- **Redis Configuration**: Make sure your Redis instance is properly configured and accessible.
+- **CORS Settings**: The backend is configured to accept connections from the frontend domain.
+
+## Troubleshooting
+
+- **Socket Connection Issues**: Check if your hosting provider supports WebSockets
+- **Task Not Adding**: Verify Redis connection and credentials
+- **Tasks Not Displaying**: Ensure MongoDB connection is working
+
+## Future Improvements
+
+- Task deletion and editing functionality
+- User authentication and personal task lists
+- Task categorization and filtering
+- Offline support with local storage
+- Progressive Web App capabilities
+- Task completion status tracking
+- Due dates and reminders
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+---
+
+_Developed by Hisamuddin - A Kazam EV Tech Assignment_

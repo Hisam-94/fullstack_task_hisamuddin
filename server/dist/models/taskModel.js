@@ -29,4 +29,3 @@ const TaskSchema = new mongoose_1.Schema({
     tasks: { type: [String], required: true },
 });
 exports.Task = mongoose_1.default.model("assignment_hisamuddin", TaskSchema);
-//# sourceMappingURL=taskModel.js.map

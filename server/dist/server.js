@@ -36,7 +36,10 @@ app.use("/api/tasks", taskRoutes_1.default);
 app.get("/", (req, res) => {
     res.send("Server is up and running!");
 });
-// Start server
-const PORT = appConfig_1.default.server.port;
-httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-//# sourceMappingURL=server.js.map
+// Start server in standalone mode
+if (require.main === module) {
+    const PORT = appConfig_1.default.server.port;
+    httpServer.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+}
+// Export for serverless use
+exports.default = app;
